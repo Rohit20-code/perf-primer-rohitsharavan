@@ -60,11 +60,11 @@ Test levels are about **how much of the system** you're testing at once.
 
 **Unit testing:** one small piece on its own, like a single function. For example, does the function that generates a Ticket ID always return a unique one? Developers usually write these, using tools like JUnit, NUnit, Jest or pytest.
 
-**Integration testing:** do the pieces talk to each other properly? In my IT Service Hub project that would be: a ticket submitted in Power Apps reaches the Power Automate flow and gets saved in Dataverse. Developers and QA both do this.
+**Integration testing:** do the pieces talk to each other properly? For example, when a user submits a form on the website, does the backend API receive it and save it correctly in the database? Developers and QA both do this.
 
 **System testing:** the whole app end to end against the requirements. For example: employee logs in, raises a ticket, it gets assigned to a technician, notifications go out. This is mostly QA's job, and it can include functional and non-functional checks.
 
-**Acceptance testing:** does it meet the business need, and will the actual users accept it? For example, the IT manager checks the asset assignment feature and confirms it works the way the company needs. Business users or customers do this, with QA helping.
+**Acceptance testing:** does it meet the business need, and will the actual users accept it? For example, the client tries out the new reporting feature and confirms it works the way their business needs. Business users or customers do this, with QA helping.
 
 One thing that cleared up a lot of confusion: **test levels ≠ test types.**
 - Levels = scope (unit, integration, system, acceptance).
@@ -80,7 +80,7 @@ So you can do performance testing at the system level, or security testing at th
 
 My two examples:
 1. **Login:** valid username and password gets you in; a wrong password gets rejected with an error.
-2. **Ticket creation:** submitting a ticket creates the right record in Dataverse with the details I entered.
+2. **Ticket creation:** submitting a ticket creates the right record in the database with the details I entered.
 
 (Search, filters, sorting and registration are all functional too.)
 

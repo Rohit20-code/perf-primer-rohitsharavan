@@ -33,7 +33,7 @@ I made a practice folder and tried each of these:
 | Delete a file | `del c.txt` | `Remove-Item c.txt` | `c.txt` deleted; only `a.txt` left. |
 
 Small things that save time:
-- If a path has spaces, wrap it in quotes: `cd "C:\Users\me\OneDrive - psiog.com\Desktop"`.
+- If a path has spaces, wrap it in quotes: `cd "C:\My Projects\notes"`.
 - **Tab** autocompletes file and folder names. **Up arrow** brings back the last command.
 
 ## 3. Environment variables and PATH
