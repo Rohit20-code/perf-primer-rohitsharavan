@@ -1,81 +1,92 @@
 # P1.2 – Command Line Essentials (PowerShell and cmd)
 
-Reference: Microsoft Learn module "Introduction to PowerShell".
+What I picked up from the Microsoft Learn "Introduction to PowerShell" module, plus my own practice runs.
 
-## 1. What a shell is
+## 1. cmd vs PowerShell
 
-- A shell is a program where I type commands and get text back.
-- **cmd** (Command Prompt) is the old Windows shell. Commands are plain text: `dir`, `cd`, `set`.
-- **PowerShell** is the newer Windows shell. Its commands are *cmdlets* named Verb-Noun (`Get-ChildItem`, `Set-Location`) and they pass **objects**, not just text, through the pipe `|`.
-- PowerShell has **aliases** so old commands still work: `dir`, `ls` → `Get-ChildItem`; `cd` → `Set-Location`; `cat`, `type` → `Get-Content`.
-- Useful discovery commands in PowerShell:
-  - `Get-Command *process*` – find commands by name.
-  - `Get-Help Get-ChildItem -Examples` – see how a command is used.
-  - `Get-Process | Get-Member` – see what properties an object has.
+A shell is just the window where you type commands and get text back. Windows has two:
 
-## 2. Files and folders
+- **cmd (Command Prompt):** the old one. Short commands like `dir`, `cd`, `set`.
+- **PowerShell:** the newer one. Its commands (called *cmdlets*) are named Verb-Noun, like `Get-ChildItem` or `Set-Location`. The big difference is that when you pipe (`|`) one command into another, PowerShell passes real objects, not just text.
 
-| Task | cmd | PowerShell | What it did when I ran it |
+The nice part is that PowerShell keeps aliases for the old commands, so `dir`, `ls`, `cd`, `cat` and `type` all still work.
+
+Three commands that help when I'm stuck in PowerShell:
+- `Get-Command *process*`: find a command when I only half remember its name.
+- `Get-Help Get-ChildItem -Examples`: show me how to use it.
+- `Get-Process | Get-Member`: show what properties the output has.
+
+## 2. Moving around and handling files
+
+I made a practice folder and tried each of these:
+
+| What I wanted | cmd | PowerShell | What happened |
 |---|---|---|---|
-| Show current folder | `cd` (no args) | `pwd` / `Get-Location` | Printed the full path of the folder I am in. |
-| List files | `dir` | `dir`, `ls`, `Get-ChildItem` | Listed `a.txt` and `c.txt` in my practice folder. |
-| Change folder | `cd demo` | `cd demo` / `Set-Location demo` | Moved into the `demo` folder. `cd ..` goes up one level. |
-| Create folder | `mkdir demo` | `mkdir demo` / `New-Item -ItemType Directory demo` | Created the `demo` folder. |
-| Create a file | `echo hello from p1.2 > a.txt` | `"hello from p1.2" \| Out-File a.txt` | Created `a.txt` with one line of text. |
-| Copy a file | `copy a.txt b.txt` | `Copy-Item a.txt b.txt` | Made `b.txt`, identical to `a.txt`. |
-| Move / rename | `move b.txt c.txt` | `Move-Item b.txt c.txt` | `b.txt` disappeared and `c.txt` appeared. |
-| Show contents | `type c.txt` | `cat c.txt` / `Get-Content c.txt` | Printed `hello from p1.2`. |
-| Delete a file | `del c.txt` | `Remove-Item c.txt` | `c.txt` was gone; only `a.txt` was left. |
+| Where am I? | `cd` | `pwd` | Printed the full path of my current folder. |
+| What's in here? | `dir` | `dir` / `ls` | Listed `a.txt` and `c.txt`. |
+| Go into a folder | `cd demo` | `cd demo` | Moved into `demo`. `cd ..` goes back up. |
+| Make a folder | `mkdir demo` | `mkdir demo` | Created `demo`. |
+| Make a file | `echo hello from p1.2 > a.txt` | `"hello from p1.2" \| Out-File a.txt` | Created `a.txt` with one line in it. |
+| Copy a file | `copy a.txt b.txt` | `Copy-Item a.txt b.txt` | Got a `b.txt` identical to `a.txt`. |
+| Move / rename | `move b.txt c.txt` | `Move-Item b.txt c.txt` | `b.txt` was gone, `c.txt` appeared. |
+| Read a file | `type c.txt` | `cat c.txt` | Printed `hello from p1.2`. |
+| Delete a file | `del c.txt` | `Remove-Item c.txt` | `c.txt` deleted; only `a.txt` left. |
 
-Tips:
-- Paths with spaces need quotes: `cd "C:\Users\me\OneDrive - psiog.com\Desktop"`.
-- Tab completes file and folder names; Up arrow repeats the last command.
+Small things that save time:
+- If a path has spaces, wrap it in quotes: `cd "C:\Users\me\OneDrive - psiog.com\Desktop"`.
+- **Tab** autocompletes file and folder names. **Up arrow** brings back the last command.
 
 ## 3. Environment variables and PATH
 
-An **environment variable** is a named value that the shell and any program it starts can read.
+An environment variable is a named value that the terminal, and any program started from it, can read.
 
 | | cmd | PowerShell |
 |---|---|---|
-| Set | `set GREETING=hello` | `$env:GREETING = "hello"` |
-| Read | `echo %GREETING%` | `echo $env:GREETING` |
-| List all | `set` | `Get-ChildItem env:` |
+| Set it | `set GREETING=hello` | `$env:GREETING = "hello"` |
+| Read it | `echo %GREETING%` | `echo $env:GREETING` |
+| See all | `set` | `Get-ChildItem env:` |
 
-Both printed `hello` when I ran them.
+Both printed `hello` for me.
 
-- A variable set this way lives only in **that terminal window**. Close it and it is gone. A second terminal does not see it.
-- To make it permanent: `setx GREETING hello` (then open a **new** terminal), or System Properties → Environment Variables.
-- This course writes commands in cmd style (`set NAME=value`); in PowerShell I use `$env:NAME = "value"`.
+The catch: a variable set like this only lives in **that one terminal window**. Close it and it's gone, and a second window won't see it either. To make it stick, use `setx GREETING hello` (and open a new terminal), or set it in System Properties → Environment Variables.
 
-**PATH** is a special variable: a `;`-separated list of folders. When I type `git`, Windows searches each PATH folder in order for `git.exe` (or `.cmd`, `.bat`). My PATH had 25 folders.
+The course writes commands cmd-style (`set NAME=value`), so when I'm in PowerShell I translate to `$env:NAME = "value"`.
 
-- See it: `echo %PATH%` (cmd) or `$env:Path -split ';'` (PowerShell).
-- Find where a program comes from: `where git` (cmd) or `where.exe git` / `Get-Command git` (PowerShell).
-  - `where.exe git` → `C:\Program Files\Git\cmd\git.exe`
-  - `where.exe python` → found three, the first one on PATH wins.
-  - `where.exe jmeter` → "Could not find files" (JMeter is not installed / not on PATH yet).
+**PATH** is the important one. It's a list of folders separated by `;`. When I type `git`, Windows walks through those folders in order looking for `git.exe`. If it doesn't find it in any of them, you get "not recognized". Mine has 25 folders.
 
-## 4. Running programs with arguments and flags
+- See it: `echo %PATH%` (cmd) or `$env:Path -split ';'` (PowerShell, one folder per line, much easier to read).
+- Find where a command lives: `where git` (cmd) or `where.exe git` / `Get-Command git` (PowerShell).
 
-- An **argument** is extra text after the program name; a **flag** (option) is an argument that starts with `-` or `--`.
-  - `python --version` → `Python 3.14.3`
-  - `git --version` → `git version 2.53.0.windows.1`
-  - `git --help` → prints git's usage and common commands.
-- **Ctrl+C** stops a running program (e.g. `ping -t localhost` runs forever until Ctrl+C).
-- **Redirecting output to a file**: `dir > files.txt 2>&1`
-  - `>` sends normal output (stream 1, stdout) to `files.txt`, overwriting it. `>>` appends instead.
-  - `2>&1` sends errors (stream 2, stderr) to the same place as stream 1, so errors land in the file too.
-  - When I ran it, `files.txt` had 9 lines (the directory listing).
+What I got:
+- `where.exe git` → `C:\Program Files\Git\cmd\git.exe`
+- `where.exe python` → three different Pythons! Whichever comes first on PATH is the one that runs.
+- `where.exe jmeter` → "Could not find files". JMeter isn't installed or isn't on PATH yet.
+
+## 4. Arguments, flags, stopping and saving output
+
+Anything after the program name is an **argument**. Arguments starting with `-` or `--` are usually called **flags** or options.
+
+- `python --version` → `Python 3.14.3`
+- `git --version` → `git version 2.53.0.windows.1`
+- `git --help` → a list of git's common commands
+
+**Ctrl+C** stops whatever is running. I tried it on `ping -t localhost`, which otherwise pings forever.
+
+**Saving output to a file:** `dir > files.txt 2>&1`
+- `>` writes the normal output into `files.txt` (overwriting it). `>>` would add to the end instead.
+- `2>&1` means "send errors to the same place as normal output", so any error messages end up in the file too instead of on screen.
+- My `files.txt` came out with 9 lines of directory listing.
 
 ## 5. Two terminals side by side
 
-- Windows Terminal: `Alt+Shift+D` (or `Alt+Shift+=` / `Alt+Shift+-`) splits the pane; `Alt+Arrow` moves between panes.
-- VS Code: open the terminal with `` Ctrl+` `` and click the **Split** icon (or `Ctrl+Shift+5`).
-- Later tasks: the app runs in one terminal, the load test (JMeter) runs in the other, so I can watch both.
+This matters later, when the app runs in one terminal and the load test runs in the other.
+
+- **Windows Terminal:** `Alt+Shift+D` splits the pane; `Alt+Arrow` jumps between panes.
+- **VS Code:** open the terminal with `` Ctrl+` ``, then hit the split icon (or `Ctrl+Shift+5`).
 
 ## Self-check
 
 **"You type `jmeter` and get 'not recognized'. What two things do you check?"**
 
-1. **Is JMeter actually installed, and where?** Check the folder exists and that `jmeter.bat` is in its `bin` folder (e.g. `C:\tools\apache-jmeter-5.6.3\bin\jmeter.bat`). Also check Java is installed (`java -version`), because JMeter needs it.
-2. **Is that `bin` folder on PATH?** Run `where jmeter` / `echo %PATH%`. If the folder is missing, add it to PATH and **open a new terminal** (an already-open terminal keeps the old PATH). Until then I can run it with its full path.
+1. **Is JMeter actually installed?** Check that the folder exists and that `bin\jmeter.bat` is inside it (e.g. `C:\tools\apache-jmeter-5.6.3\bin`). While I'm at it, `java -version` to make sure Java is there, because JMeter won't run without it.
+2. **Is its `bin` folder on PATH?** Run `where jmeter` or look through `echo %PATH%`. If it's not there, add it, then **open a new terminal**, because the one already open still has the old PATH. In the meantime I can always run it using the full path.
