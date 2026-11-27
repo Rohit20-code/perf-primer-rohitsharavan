@@ -1,669 +1,264 @@
-
 # P1.1 – Software Testing Basics
 
-## 1. Software Testing Essentials
-
-### What is Software Testing?
-
-Software testing is the process of evaluating software to identify defects and verify whether it meets specified requirements.
-
-It helps ensure that software behaves as expected, satisfies user needs and meets quality standards.
-
-### Why is Software Testing Important?
-
-1. Identifies defects before software reaches users.
-2. Verifies whether the application meets requirements.
-3. Reduces risks associated with software failures.
-4. Improves software quality, reliability and usability.
-5. Builds confidence among customers and stakeholders.
-
-### Verification vs Validation
-
-- Verification: Checks whether the product is being built correctly according to its specifications.
-- Validation: Checks whether the correct product is being built to satisfy user needs.
-
-### Testing vs Debugging
-
-- Testing identifies failures and defects in software.
-- Debugging investigates the cause of a defect and helps fix it.
-
-Testing is generally performed by testers and developers, while debugging is primarily performed by developers.
+My notes from chapters 1 and 2 of the ISTQB Foundation Level syllabus (v4.0.1). I skimmed it for understanding, not for the exam, so this is how I understand it in my own words.
 
 ---
 
-## 2. Software Development Life Cycle (SDLC)
+## 1. What testing actually is
 
-### What is SDLC?
+Testing is checking software to find problems and to make sure it does what it's supposed to do. It's not only "clicking around to find bugs". It's also about giving the team confidence that the thing is good enough to ship.
 
-SDLC stands for Software Development Life Cycle. It is a structured process followed to plan, design, develop, test, deploy and maintain software applications.
+Why bother:
+- Bugs found before release are much cheaper (and less embarrassing) than bugs users find.
+- It tells us whether we actually built what was asked for.
+- It lowers the risk of something breaking in production.
+- Customers and the business trust a product more when it has been properly tested.
 
-### Stages of SDLC
+Two pairs of words I kept mixing up:
 
-1. Requirement Analysis:
-   Understanding the customer's needs and identifying the features required in the application.
-
-2. Planning:
-   Estimating project cost, time, resources and potential risks.
-
-3. Design:
-   Preparing application architecture, database structures, UI designs and technical specifications.
-
-4. Development:
-   Writing code and implementing the required functionalities.
-
-5. Testing:
-   Verifying the application against requirements and identifying defects.
-
-6. Deployment and Maintenance:
-   Releasing the application to users, monitoring its performance and fixing issues.
-
-### SDLC Models
-
-**Waterfall Model**
-
-A sequential development model in which each phase is generally completed before the next phase begins. Testing mainly happens after development, although reviews can happen earlier.
-
-**Agile Model**
-
-An iterative development approach in which software is developed and tested in smaller increments. Teams deliver functionality through repeated iterations and incorporate feedback.
-
-**V-Model**
-
-A development model in which each development phase has a corresponding testing phase. Test planning begins early in the development lifecycle.
-
-### Testing Throughout SDLC
-
-Testing is not limited to the testing phase.
-
-QA activities can happen throughout SDLC:
-
-- Requirements: Review requirements and identify missing information.
-- Planning: Estimate testing effort and identify risks.
-- Design: Review application designs and architecture.
-- Development: Prepare test cases and test data.
-- Testing: Execute test cases and report defects.
-- Deployment: Perform final checks and verify release readiness.
-- Maintenance: Test bug fixes and perform regression testing.
-
-### Shift Left Testing
-
-Shift Left means moving testing activities earlier in the software development lifecycle to identify defects as early as possible.
-
-Example: A tester reviews the login requirements and identifies missing password validation rules before developers start coding.
-
-Finding defects early generally reduces the cost and effort required to fix them.
-
-### DevOps
-
-DevOps encourages collaboration between development and operations teams to improve software delivery.
-
-It uses automation, continuous integration and continuous delivery/deployment practices.
-
-- CI (Continuous Integration): Frequently integrating code changes and automatically building and testing them.
-- CD (Continuous Delivery/Deployment): Automating the preparation or deployment of software releases.
-
-Example: When a developer pushes code to GitHub, an automated pipeline can build the application and execute tests.
+- **Verification vs validation.** Verification asks "did we build it right?" (does it match the spec?). Validation asks "did we build the right thing?" (does it actually solve the user's problem?). Something can pass verification and still fail validation if the spec itself was wrong.
+- **Testing vs debugging.** Testing finds that something is wrong. Debugging is the developer digging into the code to find out *why* and fix it. Testers mostly test; developers mostly debug.
 
 ---
 
-## 3. Test Levels
+## 2. SDLC and where testing sits
 
-Test levels represent different scopes of software testing.
+SDLC (Software Development Life Cycle) is just the overall journey of building software:
 
-### 1. Unit Testing
+1. **Requirements:** figure out what the customer needs.
+2. **Planning:** time, cost, people, risks.
+3. **Design:** architecture, database, screens.
+4. **Development:** writing the code.
+5. **Testing:** checking it against the requirements.
+6. **Deployment and maintenance:** releasing it, watching it, fixing things.
 
-Unit testing checks individual components, functions or methods independently to verify that they work correctly.
+How these steps are arranged depends on the model:
 
-Example: Testing a function that generates a unique Ticket ID.
+- **Waterfall:** one phase after another. Testing mostly happens near the end, which means bugs are found late.
+- **V-Model:** every development phase has a matching test phase (requirements ↔ acceptance testing, design ↔ system/integration testing, code ↔ unit testing), so test planning starts early.
+- **Agile:** small pieces built and tested in short cycles, with feedback all the way through.
 
-Usually performed by developers.
+The big takeaway for me: **testing isn't one phase, it runs through the whole lifecycle.**
 
-Common tools include JUnit, NUnit, Jest and pytest.
+- In requirements, QA reviews them and spots gaps.
+- In planning, QA estimates test effort and flags risks.
+- In design, QA reviews designs for testability.
+- During development, QA writes test cases and prepares test data.
+- In testing, QA runs tests and logs defects.
+- At deployment, QA does final checks.
+- In maintenance, QA retests fixes and runs regression.
 
-### 2. Integration Testing
+**Shift left** means pulling testing activities earlier. For example, I review the login requirements and notice nobody has defined password rules, before any code is written. Catching that on paper costs minutes. Catching it after release costs a lot more.
 
-Integration testing verifies whether multiple components or systems communicate and work together correctly.
-
-Example: Verifying that a ticket submitted through Power Apps is correctly received by a Power Automate flow and stored in Dataverse.
-
-Performed by developers and QA engineers.
-
-### 3. System Testing
-
-System testing verifies the complete integrated application against its specified requirements.
-
-Example: Testing the complete IT Service Hub workflow, from employee login and ticket creation to technician assignment and notification.
-
-Usually performed by QA engineers.
-
-System testing can include both functional and non-functional testing.
-
-### 4. Acceptance Testing
-
-Acceptance testing checks whether the software meets business requirements and is acceptable for its intended users.
-
-Example: An IT manager verifies whether the asset assignment functionality satisfies the company's requirements.
-
-Usually performed by business users, customers or their representatives, with QA support.
-
-### Difference Between Test Levels and Test Types
-
-Test levels describe the scope of testing, whereas test types describe the testing objective or quality characteristic.
-
-Examples of test levels:
-- Unit Testing
-- Integration Testing
-- System Testing
-- Acceptance Testing
-
-Examples of test types:
-- Functional Testing
-- Performance Testing
-- Security Testing
-- Usability Testing
+**DevOps / CI/CD:** dev and ops work together and automate as much as possible. With CI, every push to GitHub can automatically build the app and run the tests. CD takes it further and automates getting the build ready for release (or deploying it).
 
 ---
 
-## 4. Functional vs Non-functional Testing
+## 3. Test levels
 
-### Functional Testing
+Test levels are about **how much of the system** you're testing at once.
 
-Functional testing verifies whether the application performs the functions specified in its requirements.
+**Unit testing:** one small piece on its own, like a single function. For example, does the function that generates a Ticket ID always return a unique one? Developers usually write these, using tools like JUnit, NUnit, Jest or pytest.
 
-It checks what the software does.
+**Integration testing:** do the pieces talk to each other properly? For example, when a user submits a form on the website, does the backend API receive it and save it correctly in the database? Developers and QA both do this.
 
-Examples:
+**System testing:** the whole app end to end against the requirements. For example: employee logs in, raises a ticket, it gets assigned to a technician, notifications go out. This is mostly QA's job, and it can include functional and non-functional checks.
 
-1. Login Validation:
-   Checking whether valid credentials allow users to log in and invalid credentials are rejected.
+**Acceptance testing:** does it meet the business need, and will the actual users accept it? For example, the client tries out the new reporting feature and confirms it works the way their business needs. Business users or customers do this, with QA helping.
 
-2. Ticket Creation:
-   Checking whether submitting a ticket creates the correct record in Dataverse with the expected details.
+One thing that cleared up a lot of confusion: **test levels ≠ test types.**
+- Levels = scope (unit, integration, system, acceptance).
+- Types = what you're checking for (functional, performance, security, usability…).
 
-Other examples include search, filtering, sorting, registration and asset assignment.
-
-### Non-functional Testing
-
-Non-functional testing evaluates how well the application performs its functions.
-
-It focuses on quality characteristics such as performance, security, usability, compatibility and reliability.
-
-Examples:
-
-1. Performance Testing:
-   Checking whether an application can handle 500 simultaneous users with acceptable response times.
-
-2. Security Testing:
-   Checking whether employees can access only the information they are authorised to view.
-
-### Difference Between Functional and Non-functional Testing
-
-- Functional testing checks whether the application performs the correct operations.
-- Non-functional testing checks the quality and effectiveness of how those operations are delivered.
-
-### Types of Non-functional Testing
-
-- Performance Testing: Measures application speed and responsiveness.
-- Load Testing: Checks application behaviour under expected workloads.
-- Stress Testing: Checks application behaviour beyond its normal operating capacity.
-- Spike Testing: Checks how the application handles sudden workload changes.
-- Endurance Testing: Checks application stability under sustained workloads.
-- Security Testing: Identifies vulnerabilities and access-control weaknesses.
-- Usability Testing: Evaluates how easy the application is to use.
-- Compatibility Testing: Checks behaviour across different browsers, devices and operating systems.
-- Reliability Testing: Evaluates consistent and dependable operation.
-- Scalability Testing: Evaluates the ability to handle increasing workloads.
+So you can do performance testing at the system level, or security testing at the integration level, and so on.
 
 ---
 
-## 5. Essential Testing Terminology
+## 4. Functional vs non-functional testing
 
-### 1. Test Case
+**Functional testing** checks *what* the system does: does the feature behave as specified?
 
-A test case is a documented set of preconditions, inputs, execution steps and expected results used to verify a particular functionality.
+My two examples:
+1. **Login:** valid username and password gets you in; a wrong password gets rejected with an error.
+2. **Ticket creation:** submitting a ticket creates the right record in the database with the details I entered.
 
-Example:
+(Search, filters, sorting and registration are all functional too.)
 
-Test Case ID: TC_LOGIN_001
+**Non-functional testing** checks *how well* it does it: speed, security, usability, compatibility, reliability.
 
-Scenario: Login using valid credentials.
+My two examples:
+1. **Performance:** can the app handle 500 people using it at the same time and still respond quickly?
+2. **Security:** can an employee only see their own data, and not someone else's or the admin pages?
 
-Precondition: An active user account exists.
+The simplest way I can put it: functional = "does it work?", non-functional = "does it work *well enough*?"
 
-Test Steps:
-1. Open the login page.
-2. Enter a valid username.
-3. Enter a valid password.
-4. Click Login.
-
-Expected Result: The user should successfully access the dashboard.
-
-### 2. Test Data
-
-Test data is the information used as input while executing test cases.
-
-Examples include:
-
-- Valid credentials.
-- Invalid passwords.
-- Empty values.
-- Duplicate records.
-- Boundary values.
-- Large datasets.
-
-Test data helps verify how the application behaves with different inputs.
-
-### 3. Test Environment
-
-A test environment is the hardware, software, network, database and configuration setup in which testing is performed.
-
-Examples include:
-
-- Development (DEV): Used for development and initial verification.
-- Testing (TEST/QA): Used by QA engineers to execute tests.
-- Staging/UAT: A production-like environment used for final validation.
-- Production (PROD): The live environment used by actual customers.
-
-Test data refers to the information entered during testing, whereas the test environment refers to where testing is performed.
-
-### 4. Build
-
-A build is a packaged or compiled version of software generated from source code through a build process.
-
-Example: A developer makes changes to the login functionality and generates Build 1.0.2 for QA testing.
-
-A build may be generated multiple times during development.
-
-### 5. Release
-
-A release is an approved software version or increment made available to users or customers.
-
-Example: The company releases Employee Portal Version 1.0 to production.
-
-A release may contain one or more builds, depending on the delivery process.
-
-### 6. Version
-
-A version identifies a particular edition or state of a software product.
-
-Semantic Versioning commonly follows this format:
-
-MAJOR.MINOR.PATCH
-
-Example: Version 2.1.3
-
-- Major: Significant changes that may introduce compatibility issues.
-- Minor: New functionality that is generally backward compatible.
-- Patch: Bug fixes and smaller corrections.
-
-### Difference Between Build, Release and Version
-
-- Build: A packaged software output generated from source code.
-- Version: Identifies a particular edition of the software.
-- Release: Makes an approved software version available to users.
-
-Example:
-
-A developer generates Build 1.0.1 and QA tests it. After fixes, Build 1.0.2 is generated. The approved application is released as Version 1.0.
-
-### 7. Defect
-
-A defect is a flaw or imperfection in a software component or system that can cause it to behave differently from the expected requirements.
-
-Example:
-
-Requirement: Employees must not access the admin dashboard.
-
-Actual Behaviour: An employee can access the admin dashboard by modifying the URL.
-
-This is a defect because the actual behaviour violates the requirement.
-
-### Error, Defect and Failure
-
-- Error: A human action that produces an incorrect result.
-- Defect: A flaw in a software component or system.
-- Failure: An event in which software does not perform as expected during execution.
-
-### What Should a Good Defect Report Contain?
-
-A good defect report should include:
-
-1. Defect ID.
-2. Clear title and description.
-3. Environment details.
-4. Preconditions.
-5. Steps to reproduce.
-6. Expected result.
-7. Actual result.
-8. Severity.
-9. Priority.
-10. Supporting attachments such as screenshots, recordings or logs.
-
-Example:
-
-Defect ID: BUG-001
-
-Title: Employee can access the admin dashboard without admin permissions.
-
-Environment: TEST environment, Chrome on Windows 11.
-
-Precondition: Employee account is logged in.
-
-Steps to Reproduce:
-1. Log in using employee credentials.
-2. Copy the admin dashboard URL.
-3. Paste it into the browser.
-4. Press Enter.
-
-Expected Result: Access should be denied.
-
-Actual Result: Admin dashboard is displayed.
-
-Severity: High.
-
-Priority: High, assuming the team needs this security defect fixed urgently.
-
-### Severity vs Priority
-
-- Severity describes how seriously the defect affects the application.
-- Priority describes how urgently the defect should be fixed.
-
-Example:
-
-A minor spelling mistake on an important payment screen may have low severity but high priority.
-
-A serious issue affecting a rarely used feature may have high severity but lower priority, depending on business impact.
+The non-functional types I want to remember:
+- **Performance:** how fast and responsive it is.
+- **Load:** behaviour under the expected number of users.
+- **Stress:** pushing past the limit to see where and how it breaks.
+- **Spike:** a sudden jump in traffic.
+- **Endurance / soak:** a steady load for a long time (memory leaks show up here).
+- **Security:** vulnerabilities and access control.
+- **Usability:** is it easy to use?
+- **Compatibility:** different browsers, devices, OSes.
+- **Reliability:** does it keep working consistently?
+- **Scalability:** does it cope as load grows (and when we add more servers)?
 
 ---
 
-## 6. How QA Works in a Scrum Team
+## 5. Everyday testing vocabulary
 
-### Scrum
+**Test case:** a written-down check: preconditions, steps, input, and what should happen. Example:
 
-Scrum is an Agile framework in which teams work in short, fixed-length iterations called Sprints to deliver usable product increments.
+> **TC_LOGIN_001: Login with valid credentials**
+> Precondition: an active user account exists.
+> Steps: open login page → enter valid username → enter valid password → click Login.
+> Expected: user lands on the dashboard.
 
-### Scrum Team Accountabilities
+**Test data:** the actual values I feed in: valid and invalid passwords, empty fields, duplicate records, boundary values, big datasets. Good test data is half of good testing.
 
-1. Product Owner:
-   Maximises product value and manages the Product Backlog.
+**Test environment:** *where* the testing happens: the servers, database, network and configuration. Typical setup:
+- **DEV:** developers' playground.
+- **TEST / QA:** where QA runs tests.
+- **Staging / UAT:** as close to production as possible, used for final checks.
+- **PROD:** the live system real users are on.
 
-2. Scrum Master:
-   Helps the team understand and apply Scrum and supports team effectiveness.
+(Test data = what I type in. Test environment = where I'm typing it.)
 
-3. Developers:
-   Create the product increment. This includes software developers, testers and other specialists.
+**Build:** a packaged version of the code produced by the build process. A dev changes the login code, produces Build 1.0.2 and hands it to QA. There can be many builds a day.
 
-### Sprint
+**Version:** the label that identifies a particular state of the product. Usually `MAJOR.MINOR.PATCH`, like 2.1.3:
+- major = big changes, might break compatibility
+- minor = new features, still compatible
+- patch = bug fixes
 
-A Sprint is a fixed-length period of one month or less during which the team works towards a Sprint Goal.
+**Release:** a version that's been approved and actually handed to users.
 
-Many software teams use two-week Sprints.
+How they connect: QA tests Build 1.0.1, finds bugs, devs fix them, QA tests Build 1.0.2, it passes, and that build goes out to users as **Release / Version 1.0**.
 
-Activities include:
+**Defect:** the software behaving differently from what it should. Example: the requirement says employees can't open the admin dashboard, but if you paste the admin URL into the browser, it opens. That's a defect.
 
-- Sprint Planning: Selecting work and establishing the Sprint Goal.
-- Daily Scrum: Inspecting progress and adapting the plan.
-- Development and Testing: Building and verifying functionality.
-- Sprint Review: Inspecting the increment with stakeholders.
-- Sprint Retrospective: Identifying improvements to the team's working process.
+Related terms:
+- **Error:** a mistake a person makes (e.g. a dev forgets a permission check).
+- **Defect:** the flaw that mistake leaves in the code.
+- **Failure:** what you see when that flawed code runs and misbehaves.
 
-### User Story
+### What makes a good defect report
 
-A User Story describes a feature from the user's perspective.
+The goal is that a developer can reproduce it without having to come and ask me anything. So it needs:
 
-Common format:
-
-"As a [type of user], I want [functionality], so that [benefit]."
-
-Example:
-
-"As an employee, I want to raise an IT support ticket so that I can report technical problems and receive assistance."
-
-### Acceptance Criteria
-
-Acceptance Criteria are specific conditions that a user story must satisfy to be accepted.
-
-Example for ticket creation:
-
-- Employee must be logged in.
-- Ticket title must be mandatory.
-- Ticket description must be provided.
-- Ticket must be saved successfully.
-- A unique Ticket ID must be generated.
-- Employee must be able to view the submitted ticket.
-
-QA uses these criteria to prepare and execute test cases.
-
-### Definition of Done
-
-Definition of Done is a shared set of quality criteria that must be satisfied before work is considered complete.
-
-Examples:
-
-- Code is completed and reviewed.
-- Required unit tests are passed.
-- Required integration tests are passed.
-- Acceptance criteria are satisfied.
-- No unresolved critical defects remain.
-- Documentation is updated where necessary.
-
-### Difference Between Acceptance Criteria and Definition of Done
-
-- Acceptance Criteria are specific to an individual user story and define what the feature must achieve.
-- Definition of Done provides shared quality standards for completed work.
-
-### QA's Role in Scrum
-
-QA participates throughout the Sprint.
-
-1. Reviews requirements and user stories.
-2. Clarifies acceptance criteria.
-3. Identifies positive and negative test scenarios.
-4. Prepares test cases and test data.
-5. Collaborates with developers during implementation.
-6. Executes tests when builds are available.
-7. Reports defects with reproduction steps.
-8. Retests fixes and performs regression testing.
-9. Verifies that acceptance criteria and Definition of Done are satisfied.
-10. Supports the team in reviewing the increment before release.
-
-### Regression Testing
-
-Regression testing checks whether software changes have unintentionally affected previously working functionality.
+1. An ID
+2. A clear title (what's broken, where)
+3. Environment (which env, browser, OS, build)
+4. Preconditions
+5. Exact steps to reproduce
+6. Expected result
+7. Actual result
+8. Severity
+9. Priority
+10. Evidence: screenshots, a screen recording, logs
 
 Example:
 
-After a developer fixes employee login validation, QA checks whether employee login, admin login and ticket creation still work correctly.
+> **BUG-001: Employee can open the admin dashboard without admin rights**
+> Environment: TEST, Chrome on Windows 11
+> Precondition: logged in as an employee
+> Steps: log in as employee → paste the admin dashboard URL → press Enter
+> Expected: access denied
+> Actual: admin dashboard loads
+> Severity: High · Priority: High (it's a security hole)
 
-### Release
-
-A release makes an approved software version or increment available to users.
-
-A release does not necessarily have to happen at the end of every Sprint.
-
-### One-Paragraph Summary: QA in Scrum
-
-In a Scrum team, QA works collaboratively with developers and the Product Owner throughout each Sprint. QA reviews user stories and acceptance criteria, prepares test cases and test data, executes tests, reports defects and verifies fixes. The team follows its Definition of Done to ensure that completed work meets the required quality standards. During Sprint Reviews, the increment is inspected with stakeholders, and approved functionality can be released to users according to the product's release plan.
+**Severity vs priority:** severity is how badly it breaks things; priority is how soon it needs fixing. They don't always match. A typo on the payment page is low severity but might be high priority because customers see it. A crash in a feature almost nobody uses is high severity but might wait.
 
 ---
 
-## 7. Where Performance Testing Fits
+## 6. How QA works in a Scrum team
 
-### What is Performance Testing?
+Scrum is an Agile way of working in short, fixed cycles called **sprints** (a month or less, two weeks is common). The roles:
+- **Product Owner:** owns the backlog and decides what's most valuable.
+- **Scrum Master:** helps the team work well and follow Scrum.
+- **Developers:** everyone building the increment, **testers included**.
 
-Performance testing is a type of non-functional testing that evaluates the responsiveness, speed, stability, scalability and resource utilisation of an application under a defined workload.
+A sprint goes roughly: Sprint Planning (pick the work and set a goal) → Daily Scrum (quick daily sync) → build and test → Sprint Review (show stakeholders) → Retrospective (how can we work better?).
 
-It checks how well an application performs when users access it.
+**User story:** a feature written from the user's side: *"As an employee, I want to raise an IT support ticket so that I can get help with technical problems."*
 
-Example:
+**Acceptance criteria:** the specific conditions that story has to meet to be accepted. For the ticket story: user must be logged in, title and description are mandatory, the ticket saves, a unique ID is generated, and the employee can see their ticket afterwards. These turn almost directly into my test cases.
 
-A login application works correctly for one user but takes 20 seconds when 500 users attempt to log in simultaneously.
+**Definition of Done (DoD):** the team's shared checklist for *any* item to count as finished: code reviewed, unit and integration tests passing, acceptance criteria met, no open critical bugs, docs updated.
 
-This indicates a performance problem.
+The difference: acceptance criteria are specific to one story; the DoD applies to everything.
 
-### Types of Performance Testing
+**Regression testing:** after a change, checking that the stuff that used to work still works. For example, after a login fix, I recheck employee login, admin login and ticket creation.
 
-**1. Load Testing**
+**Release:** shipping an approved increment to users. It doesn't have to happen every sprint; that's up to the release plan.
 
-Checks application behaviour under an expected or specified workload.
+### My paragraph on QA in Scrum
 
-Example: Testing an application with 500 simultaneous users.
-
-Question answered: Can the application handle its expected workload?
-
-**2. Stress Testing**
-
-Checks application behaviour beyond its normal operating capacity.
-
-Example: Increasing the workload beyond 500 users until performance degrades.
-
-Question answered: How does the application behave beyond its expected capacity?
-
-**3. Spike Testing**
-
-Checks how an application handles sudden increases or decreases in workload.
-
-Example: Increasing traffic suddenly from 50 to 1,000 users.
-
-Question answered: Can the application handle sudden traffic spikes?
-
-**4. Endurance Testing (Soak Testing)**
-
-Checks application stability under a sustained workload over an extended period.
-
-Example: Running 300 virtual users continuously for 8 hours.
-
-Question answered: Can the application remain stable over a long period?
-
-**5. Volume Testing**
-
-Checks application performance when handling large quantities of data.
-
-Example: Searching and retrieving records from a database containing 5 million records.
-
-Question answered: Can the application handle large volumes of data efficiently?
-
-**6. Scalability Testing**
-
-Checks how effectively an application handles increasing workloads when additional resources or capacity are provided.
-
-Example: Increasing server capacity to support a growing number of concurrent users.
-
-Question answered: Can the application scale as workload increases?
-
-### Important Performance Testing Metrics
-
-1. Response Time:
-   Time taken for an application or server to respond to a request.
-
-2. Throughput:
-   Number of transactions or requests processed per unit of time.
-
-3. Latency:
-   Delay before a response or operation begins, depending on the measurement definition.
-
-4. Error Rate:
-   Percentage of requests that fail.
-
-   Error Rate = (Failed Requests / Total Requests) × 100
-
-5. Concurrent Users:
-   Number of users performing activities simultaneously.
-
-6. Resource Utilisation:
-   Amount of CPU, memory, disk and network resources consumed.
-
-### Role of Apache JMeter
-
-Apache JMeter is a performance testing tool used to generate simulated workloads and measure application behaviour.
-
-Important JMeter components include:
-
-- Test Plan: Container for the complete test.
-- Thread Group: Configures virtual users and their execution.
-- HTTP Request Sampler: Sends HTTP requests to the application.
-- Listener: Collects and displays test results.
-- Assertions: Checks whether responses satisfy expected conditions.
-
-Example:
-
-A JMeter test can simulate 500 virtual users accessing an employee login API and measure response times, throughput and error rates.
-
-JMeter simulates requests using virtual users. It does not necessarily behave exactly like real people interacting through browsers.
-
-Performance test results depend on the test configuration and environment.
-
-### Where Performance Testing Fits
-
-Performance testing is a form of non-functional testing. It can be performed at different test levels, particularly system testing, and throughout the software lifecycle.
-
-Functional testing checks whether the application performs the correct operations.
-
-Performance testing answers questions that functional testing alone cannot answer:
-
-1. How quickly does the application respond?
-2. How many simultaneous users can it support?
-3. How much traffic can it handle before performance degrades?
-4. Does the application remain stable under sustained workloads?
-5. What happens when traffic suddenly increases?
-6. Does the application consume excessive CPU, memory or network resources?
-
-### Functional Testing vs Performance Testing Example
-
-Scenario: An employee login application.
-
-Functional Testing:
-- A user enters valid credentials.
-- The application authenticates the user.
-- The dashboard opens successfully.
-
-This verifies that login functionality works correctly.
-
-Performance Testing:
-- 500 users attempt to log in simultaneously.
-- Response times are measured.
-- Throughput and error rates are analysed.
-- Application stability is evaluated.
-
-This verifies how well the application performs under concurrent workload.
+In a Scrum team, QA isn't a gate at the end; we're part of the team from the start of the sprint. During planning and refinement I read the user stories, ask questions and help pin down clear acceptance criteria. While developers build, I write test cases and get test data ready, so when a build lands I can test it straight away, log defects with clear steps, and retest the fixes along with some regression. A story is only "done" when it meets its acceptance criteria *and* the team's Definition of Done. At the Sprint Review we show the working increment to stakeholders, and whenever the Product Owner decides it's ready, it goes out as a release.
 
 ---
 
-## 8. Final Self-Check
+## 7. Where performance testing fits
 
-Question:
+Performance testing is a **non-functional** test type. It's about how fast and stable the app is under a given load: response times, how many users it can take, and how much CPU and memory it eats.
 
-A login page works for one user but takes 20 seconds when 500 users log in at 09:00. Which kind of testing finds that, and why would functional testing miss it?
+The classic example: the login page works perfectly for one person but takes 20 seconds when 500 people log in at 9 a.m. Nothing is "functionally" wrong, but users would still say it's broken.
 
-Answer:
+The flavours:
+- **Load testing:** the expected load (e.g. 500 users). *Can it handle a normal busy day?*
+- **Stress testing:** keep adding users past 500 until it degrades or breaks. *Where's the limit, and does it fail gracefully?*
+- **Spike testing:** jump from 50 to 1,000 users suddenly. *Can it handle a rush?*
+- **Endurance / soak testing:** 300 users for 8 hours. *Does it stay stable, or slowly leak memory?*
+- **Volume testing:** a huge amount of data, like searching 5 million records. *Does it cope with big data?*
+- **Scalability testing:** add more capacity and see if performance grows with it. *Can it grow?*
 
-Performance testing identifies this problem because it evaluates application responsiveness and stability under concurrent workloads.
+Numbers I'll be watching:
+- **Response time:** how long a request takes to come back.
+- **Throughput:** requests or transactions handled per second.
+- **Latency:** the delay before a response starts.
+- **Error rate:** failed requests ÷ total requests × 100.
+- **Concurrent users:** how many are active at the same moment.
+- **Resource use:** CPU, memory, disk, network on the server.
 
-More specifically, load testing would be appropriate if 500 users represent the expected workload.
+**JMeter** is the tool this course uses. It fires requests at the app from simulated "virtual users" and records what happens. The main parts:
+- **Test Plan:** the whole test.
+- **Thread Group:** how many virtual users, and how fast they ramp up.
+- **HTTP Request sampler:** the actual request sent.
+- **Listeners:** collect and show results.
+- **Assertions:** check that responses are correct, not just fast.
 
-Functional testing would not necessarily identify this problem because it checks whether the login functionality works correctly, not whether it responds quickly under heavy traffic.
+One caveat to remember: virtual users aren't real people in real browsers, and results depend heavily on the test setup and environment. A test on a weak QA server doesn't tell you exactly how production will behave.
 
-The login feature works for one user, but the application struggles when 500 users access it simultaneously.
+### What performance testing answers that functional testing can't
+
+Functional testing tells me the login *works*. Performance testing tells me:
+- How fast does it respond?
+- How many users can it handle at once?
+- At what point does it start slowing down or failing?
+- Does it stay stable over hours?
+- What happens if traffic suddenly spikes?
+- Is it burning through CPU or memory?
+
+Same login page, two different questions. Functional: one user enters valid details and gets the dashboard. Performance: 500 users do that at once while I measure response time, throughput and errors.
 
 ---
 
-## 9. Overall Key Takeaways
+## 8. Self-check
 
-1. Software testing evaluates software quality and identifies defects.
-2. SDLC describes the complete process of developing and maintaining software.
-3. Testing happens throughout the software development lifecycle.
-4. Unit testing checks individual components.
-5. Integration testing checks communication between components.
-6. System testing checks the complete application.
-7. Acceptance testing checks whether business requirements are satisfied.
-8. Functional testing checks what the application does.
-9. Non-functional testing checks how well the application performs.
-10. Test cases, test data and test environments are essential for executing tests.
-11. Defect reports help developers understand and reproduce problems.
-12. QA collaborates with the Scrum team throughout each Sprint.
-13. Performance testing evaluates application behaviour under different workloads.
-14. Apache JMeter can simulate virtual users and measure performance metrics.
+**Q: A login page works for one user but takes 20 seconds when 500 users log in at 09:00. Which kind of testing finds that, and why would functional testing miss it?**
+
+**Performance testing**, and more specifically **load testing**, since 500 users at 9 a.m. is the normal expected peak.
+
+Functional testing misses it because it only checks that login gives the right result, usually with one user at a time. With one user it passes fine. The slowdown only shows up when hundreds of requests hit the server together and compete for resources, and functional tests never create that situation or measure timing.
 
 ---
 
-**End of P1.1 – Software Testing Essentials**
+## 9. What I'm taking away
+
+- Testing is about finding problems early **and** building confidence, and it happens throughout the lifecycle, not just at the end.
+- Levels (unit → integration → system → acceptance) describe scope; types (functional, performance, security…) describe what you're checking.
+- Functional = does it work; non-functional = does it work well enough.
+- A good test case and a good bug report both come down to being clear enough that someone else can repeat them.
+- In Scrum, QA is part of the team from day one, guided by acceptance criteria and the Definition of Done.
+- Performance testing is where this course is heading, and JMeter is the tool for it.
