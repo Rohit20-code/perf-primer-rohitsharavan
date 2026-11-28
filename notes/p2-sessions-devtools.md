@@ -6,27 +6,32 @@ HTTP is stateless (see P2.1), so the server needs *something* in every request t
 
 **Call 1:** `GET https://postman-echo.com/cookies/set?course=perf`
 
-The server answered `302 Found` (a redirect to `/cookies`), and the important part was this response header:
+The server replied with a `Set-Cookie` header:
 
 ```
 Set-Cookie: course=perf; Path=/
 ```
 
-That's the server saying "store this, and send it back to me from now on." (It also set a couple of its own cookies, like a session ID `sails.sid` marked `HttpOnly`, and some Cloudflare ones.)
+That's the server saying "store this, and send it back to me from now on."
 
-**Call 2:** `GET https://postman-echo.com/cookies`
+Postman stored it. Under **Cookies** (right side, below Send), `postman-echo.com` now had **4 cookies**:
+- `course=perf`: the one I asked for. It's a *session* cookie, which means it's gone when the session ends.
+- `sails.sid`: the server's own session ID, marked **HttpOnly** (JavaScript in a page can't read it, which is safer).
+- `__cf_bm` and `_cfuvid`: cookies set by Cloudflare, which sits in front of the server.
 
-I didn't add anything myself, but Postman's cookie jar sent the stored cookie along with the request, and the server echoed it back:
+![Postman cookie jar](img/p2-postman-cookies.png)
+
+**Call 2:** `GET https://postman-echo.com/cookies` → `200 OK · 640 ms · 791 B`
+
+I didn't add any header myself, but Postman sent the stored cookies along with the request automatically, and the server echoed them back:
 
 ```json
-{ "cookies": { "course": "perf", "__cf_bm": "...", "_cfuvid": "..." } }
+{ "cookies": { "__cf_bm": "3mZfQLs...", "_cfuvid": "ikIVz.MQk...", "course": "perf" } }
 ```
 
-**Same call with no stored cookies** (cleared the cookie jar) → `{ "cookies": {} }`. The server has no idea who I am anymore.
+![Cookie sent back automatically](img/p2-postman-cookie-sent.png)
 
-In Postman you can see this under **Cookies** (below the Send button), where `postman-echo.com` now has a `course` cookie.
-
-![Postman cookies](img/p2-postman-cookies.png)
+When I'd tried the same URL once from the command line *without* a cookie jar, the answer was just `{ "cookies": {} }`. No cookie sent means no idea who I am.
 
 ## 2. Bearer token: the client has to add it itself, every time
 
@@ -34,11 +39,23 @@ In Postman you can see this under **Cookies** (below the Send button), where `po
 `Authorization: Bearer practice-token-123`
 (In Postman: Authorization tab → Type: Bearer Token → `practice-token-123`.)
 
-The echoed response had it right there:
+Response: `200 OK · 2.01 s · 1.55 KB`. The echoed headers had it right there:
 
 ```json
-{ "headers": { "host": "postman-echo.com", "authorization": "Bearer practice-token-123", "accept": "*/*", ... } }
+{
+  "headers": {
+    "host": "postman-echo.com",
+    "x-forwarded-proto": "https",
+    "authorization": "Bearer practice-token-123",
+    "accept-encoding": "gzip, br",
+    "accept": "*/*",
+    "cache-control": "no-cache",
+    ...
+  }
+}
 ```
+
+Postman says it plainly under the Auth type: *"The authorization header will be automatically generated when you send the request."* Postman only adds it because I set it on this request. Open a new request without that setting, and there's no token.
 
 ![Postman bearer header](img/p2-postman-bearer.png)
 
@@ -75,22 +92,29 @@ Key points:
 
 Steps:
 1. Open Chrome → `F12` (or `Ctrl+Shift+I`) → **Network** tab.
-2. Tick **Preserve log** so the list isn't wiped when the page navigates or redirects.
-3. Load a site (I used `https://jsonplaceholder.typicode.com/posts/1`).
+2. Tick **Preserve log** so the list isn't wiped when the page navigates or redirects. (In my Chrome version it's now called **Keep log**.)
+3. Load a site. I used `https://jsonplaceholder.typicode.com/posts/1`.
 4. Click a request in the list to see its details.
 
-For one request (`GET /posts/1`):
-- **Method:** `GET`
-- **Status:** `200 OK`
-- **Request headers:** e.g. `Accept`, `User-Agent`, `Cookie` (if the site has set any)
-- **Response headers:** `Content-Type: application/json; charset=utf-8`, `Cache-Control: max-age=43200`
-- **Cookies tab:** request cookies sent and response cookies set (`Set-Cookie`)
+Loading that one page actually made **35 requests** (61.7 kB transferred, finished in 899 ms). Most were Chrome and Google background calls, not the page itself. The one I wanted was the row named **`1`**: `200`, type `document`, `0.9 kB`, `630 ms`.
 
-![DevTools request headers](img/p2-devtools-headers.png)
+![DevTools network list](img/p2-devtools-network.png)
+
+Clicking it, the **Headers** tab showed:
+- **Request URL:** `https://jsonplaceholder.typicode.com/posts/1`
+- **Request Method:** `GET`
+- **Status Code:** `200 OK`
+- **Remote Address:** `[2606:4700:3037::ac43:a797]:443`, the server's IP address (IPv6) and port 443, the https default
+- **Response headers:** e.g. `Content-Type: application/json; charset=utf-8`, `Cache-Control: max-age=43200`
+- **Request headers:** e.g. `Accept`, `User-Agent`, and `Cookie` if the site has set any
+
+![DevTools request details](img/p2-devtools-general.png)
 
 ## 6. The Timing tab: every phase
 
-![DevTools timing](img/p2-devtools-timing.png)
+My request started with **Queueing 2.72 ms** and **Stalled 13.75 ms**:
+
+![DevTools timing](img/p2-devtools-timing-top.png)
 
 | Phase | What's happening |
 |---|---|
@@ -103,7 +127,7 @@ For one request (`GET /posts/1`):
 | **Waiting for server response (TTFB)** | Time from the request being sent until the **first byte** of the response arrives. |
 | **Content Download** | Receiving the rest of the response body. Depends on size and bandwidth. |
 
-To check, I measured the same request from the command line once (cumulative times):
+To see the connection phases as numbers, I also measured the same URL once from the command line (cumulative times):
 
 ```
 DNS done:        0.010 s
