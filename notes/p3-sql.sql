@@ -1,12 +1,4 @@
-/* =====================================================================
-   P3.1 – SQL essentials
-   Practice on temporary tables only. Anything starting with # lives in
-   tempdb and disappears when this query window closes, so nothing real
-   is touched.
-   Run in SSMS against the training SQL Server (Trust server certificate ticked).
-   ===================================================================== */
 
--- ---------- Setup ----------
 CREATE TABLE #Customers (CustomerId INT PRIMARY KEY, Name NVARCHAR(50), City NVARCHAR(50));
 CREATE TABLE #Orders (OrderId INT PRIMARY KEY, CustomerId INT, Amount DECIMAL(10,2), OrderDate DATE);
 
@@ -15,7 +7,7 @@ INSERT INTO #Orders VALUES (101,1,1200,'2026-10-01'),(102,1,450,'2026-10-03'),(1
   (104,3,300,'2026-10-04'),(105,3,2200,'2026-10-06'),(106,3,150,'2026-10-07');
 
 
--- ---------- 1. Orders above 500, largest first ----------
+--1. Orders above 500, largest first--
 -- WHERE filters the rows, ORDER BY ... DESC puts the biggest on top.
 SELECT OrderId, CustomerId, Amount, OrderDate
 FROM #Orders
@@ -29,7 +21,7 @@ ORDER BY Amount DESC;
 */
 
 
--- ---------- 2. Number of orders per customer ----------
+--2. Number of orders per customer --
 -- GROUP BY squashes rows with the same CustomerId into one; COUNT(*) counts them.
 SELECT CustomerId, COUNT(*) AS OrderCount
 FROM #Orders
@@ -44,7 +36,7 @@ ORDER BY CustomerId;
 */
 
 
--- ---------- 3. Total amount per city ----------
+--3. Total amount per city --
 -- City lives in #Customers and Amount lives in #Orders, so JOIN them first, then group.
 SELECT c.City, SUM(o.Amount) AS TotalAmount
 FROM #Customers c
@@ -59,7 +51,7 @@ ORDER BY TotalAmount DESC;
 */
 
 
--- ---------- 4. Customers with no orders ----------
+-- 4. Customers with no orders --
 -- LEFT JOIN keeps every customer; where there's no matching order the o.* columns
 -- come back as NULL, so filtering on NULL leaves exactly the ones with nothing.
 SELECT c.CustomerId, c.Name, c.City
@@ -72,7 +64,7 @@ WHERE o.OrderId IS NULL;
 */
 
 
--- ---------- 5. Top 3 orders ----------
+-- 5. Top 3 orders --
 -- TOP 3 only means something together with ORDER BY. Without it you get "any 3 rows".
 SELECT TOP 3 OrderId, CustomerId, Amount
 FROM #Orders
@@ -87,12 +79,10 @@ ORDER BY Amount DESC;
 */
 
 
--- ---------- Clean up (optional: they vanish when the window closes anyway) ----------
-DROP TABLE #Orders;
-DROP TABLE #Customers;
 
 
-/* =====================================================================
+
+/* 
    Self-check:
    "After a load test that adds items to baskets, how would you prove in SQL
     how many baskets it created?"
@@ -109,4 +99,4 @@ DROP TABLE #Customers;
    successfully. If JMeter reports 5,000 passed "create basket" requests but the
    database only has 4,800 new baskets, something was lost even though the
    requests "passed".
-   ===================================================================== */
+ */
