@@ -1,9 +1,11 @@
 {
   "info": {
-    "_postman_id": "6b0f3c2e-9d1a-4c55-8f7e-2a6d4b1e9c01",
+    "_postman_id": "4981616d-b272-4c2e-81bf-f6a80c78545b",
     "name": "perf-primer P2",
     "description": "P2.2 practice calls against JSONPlaceholder. Single manual calls only - never loop or load-test a public API. Select the 'perf-primer' environment so {{baseUrl}} resolves.",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "55828794",
+    "_collection_link": "https://go.postman.co/collection/55828794-4981616d-b272-4c2e-81bf-f6a80c78545b?source=collection_link"
   },
   "item": [
     {
@@ -25,8 +27,12 @@
         "header": [],
         "url": {
           "raw": "{{baseUrl}}/posts",
-          "host": ["{{baseUrl}}"],
-          "path": ["posts"]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "posts"
+          ]
         }
       },
       "response": []
@@ -53,8 +59,13 @@
         "header": [],
         "url": {
           "raw": "{{baseUrl}}/posts/1",
-          "host": ["{{baseUrl}}"],
-          "path": ["posts", "1"]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "posts",
+            "1"
+          ]
         }
       },
       "response": []
@@ -80,9 +91,18 @@
         "header": [],
         "url": {
           "raw": "{{baseUrl}}/posts?userId=1",
-          "host": ["{{baseUrl}}"],
-          "path": ["posts"],
-          "query": [{ "key": "userId", "value": "1" }]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "posts"
+          ],
+          "query": [
+            {
+              "key": "userId",
+              "value": "1"
+            }
+          ]
         }
       },
       "response": []
@@ -103,16 +123,29 @@
       ],
       "request": {
         "method": "POST",
-        "header": [{ "key": "Content-Type", "value": "application/json; charset=UTF-8" }],
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json; charset=UTF-8"
+          }
+        ],
         "body": {
           "mode": "raw",
           "raw": "{\n  \"title\": \"perf primer\",\n  \"body\": \"my first POST\",\n  \"userId\": 1\n}",
-          "options": { "raw": { "language": "json" } }
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
         },
         "url": {
           "raw": "{{baseUrl}}/posts",
-          "host": ["{{baseUrl}}"],
-          "path": ["posts"]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "posts"
+          ]
         }
       },
       "response": []
@@ -133,16 +166,30 @@
       ],
       "request": {
         "method": "PUT",
-        "header": [{ "key": "Content-Type", "value": "application/json; charset=UTF-8" }],
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json; charset=UTF-8"
+          }
+        ],
         "body": {
           "mode": "raw",
           "raw": "{\n  \"id\": 1,\n  \"title\": \"updated title\",\n  \"body\": \"updated body\",\n  \"userId\": 1\n}",
-          "options": { "raw": { "language": "json" } }
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
         },
         "url": {
           "raw": "{{baseUrl}}/posts/1",
-          "host": ["{{baseUrl}}"],
-          "path": ["posts", "1"]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "posts",
+            "1"
+          ]
         }
       },
       "response": []
@@ -165,8 +212,13 @@
         "header": [],
         "url": {
           "raw": "{{baseUrl}}/posts/1",
-          "host": ["{{baseUrl}}"],
-          "path": ["posts", "1"]
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "posts",
+            "1"
+          ]
         }
       },
       "response": []
