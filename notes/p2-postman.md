@@ -10,13 +10,28 @@ Environment: [`postman/perf-primer.postman_environment.json`](../postman/perf-pr
 
 ## The six calls
 
-Times are from one run each. They change every run, usually between about 0.3 s and 1 s for this API.
+Sent from the Postman web app using the **Cloud Agent**, with the `perf-primer` environment selected. Times and sizes are what Postman showed for one run each.
+
+Summary:
+
+| # | Request | Status | Time | Size | Tests |
+|---|---|---|---|---|---|
+| 1 | GET /posts | 200 OK | 27 ms | 7.81 KB | 2/2 passed |
+| 2 | GET /posts/1 | 200 OK | 25 ms | 1.12 KB | 2/2 passed |
+| 3 | GET /posts?userId=1 | 200 OK | 27 ms | 1.9 KB | 2/2 passed |
+| 4 | POST /posts | 201 Created | 27 ms | 1.09 KB | 2/2 passed |
+| 5 | PUT /posts/1 | 200 OK | 42 ms | 1006 B | 2/2 passed |
+| 6 | DELETE /posts/1 | 200 OK | 33 ms | 910 B | 1/1 passed |
+
+Why so fast? The Cloud Agent sends requests from Postman's servers, which sit close to the API's servers, so there's hardly any network distance. When I called the same API from my own laptop with curl, it took 270–1000 ms. Same API, very different numbers. That's a good reminder that **where you test from changes the response time**, which matters a lot when reading load test results.
+
+![All tests passing for GET all posts](img/p2-postman-tests-pass.png)
 
 ### 1. GET {{baseUrl}}/posts
 - **Status:** `200 OK`
 - **Headers:** `Content-Type: application/json; charset=utf-8`, `Cache-Control: max-age=43200` (the response can be cached for 12 hours)
 - **Body:** a JSON array of **100 posts**, each with `userId`, `id`, `title`, `body`
-- **Time:** ~795 ms
+- **Time:** 27 ms (7.81 KB)
 
 ### 2. GET {{baseUrl}}/posts/1
 - **Status:** `200 OK`
@@ -25,13 +40,13 @@ Times are from one run each. They change every run, usually between about 0.3 s 
   ```json
   { "userId": 1, "id": 1, "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit", "body": "quia et suscipit..." }
   ```
-- **Time:** ~379 ms
+- **Time:** 25 ms (1.12 KB)
 
 ### 3. GET {{baseUrl}}/posts?userId=1
 - **Status:** `200 OK`
 - **Headers:** `Content-Type: application/json; charset=utf-8`, `Cache-Control: max-age=43200`
 - **Body:** an array of **10 posts**, all with `userId: 1`. The query string filtered the 100 down to 10.
-- **Time:** ~266 ms
+- **Time:** 27 ms (1.9 KB)
 
 ### 4. POST {{baseUrl}}/posts
 Request body (raw → JSON):
@@ -44,7 +59,7 @@ Request body (raw → JSON):
   ```json
   { "title": "perf primer", "body": "my first POST", "userId": 1, "id": 101 }
   ```
-- **Time:** ~755 ms
+- **Time:** 27 ms (1.09 KB)
 
 ### 5. PUT {{baseUrl}}/posts/1
 Request body:
@@ -57,13 +72,13 @@ Request body:
   ```json
   { "id": 1, "title": "updated title", "body": "updated body", "userId": 1 }
   ```
-- **Time:** ~965 ms
+- **Time:** 42 ms (1006 B)
 
 ### 6. DELETE {{baseUrl}}/posts/1
 - **Status:** `200 OK`
 - **Headers:** `Content-Type: application/json; charset=utf-8`, `Content-Length: 2`
 - **Body:** `{}` (empty object; nothing left to return)
-- **Time:** ~1020 ms
+- **Time:** 33 ms (910 B)
 
 What I noticed: the GETs come back with `Cache-Control: max-age=43200`, but the POST/PUT/DELETE responses say `no-cache`. That makes sense, since you don't want a "create" or "delete" answer cached.
 
@@ -79,21 +94,27 @@ Why it's worth it: if the server changes (say, from a test server to `https://lo
 
 ## Test in the Scripts tab
 
-On `GET {{baseUrl}}/posts/1`, Scripts → **Post-response**:
+On `GET {{baseUrl}}/posts/1`, Scripts → **After response**:
 
 ```js
 pm.test("status is 200", () => pm.response.to.have.status(200));
 ```
 
-Send it, and the **Test Results** tab shows **PASS: status is 200**.
+Sent it: **Test Results 2/2, PASSED: status is 200**.
 
-Then I broke it on purpose:
+Then I broke it on purpose by changing only the expected code to 201:
 
 ```js
-pm.test("status is 201", () => pm.response.to.have.status(201));
+pm.test("status is 200", () => pm.response.to.have.status(201));
 ```
 
-This time Test Results shows **FAIL: status is 201 | AssertionError: expected response to have status code 201 but got 200**.
+Sent it again: **Test Results 1/2, FAILED: status is 200 | AssertionError: expected response to have status code 201 but got 200**.
+
+![Deliberately failing test](img/p2-postman-test-fail.png)
+
+Funny detail: it says "FAILED status is 200" because I only changed the number, not the test's name. The name is just a label I write. What actually decides pass or fail is the code inside. A badly named test can be misleading, so the name should always match what the test checks.
+
+After that I changed it back to 200.
 
 The request itself still worked fine and the server still returned 200. What failed was *my check*. That's exactly what JMeter calls an **assertion**: a rule that decides whether a response counts as a pass, separate from whether the server answered at all.
 
